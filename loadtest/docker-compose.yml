@@ -1,0 +1,15 @@
+services:
+  k6:
+    image: grafana/k6:latest
+    container_name: k6-runner
+    volumes:
+      - /home/nelson/Documents/personal_work/leadsales/loadtest/scripts:/scripts
+    working_dir: /scripts
+    command: run /scripts/load_test.js   # cambia "load_test.js" por el nombre de tu script
+    networks:
+      - leadsales_app-network
+
+networks:
+  leadsales_app-network:
+    external: true   # si ya tienes una red personalizada creada
+

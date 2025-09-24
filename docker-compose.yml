@@ -1,0 +1,153 @@
+services:
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: kafka-message-counter-api-gateway
+    ports:
+      - "${PORT_API_GATEWAY}:8080"
+    environment:
+      - NODE_ENV=${ENVIRONMENT}
+      - PORT=${PORT_API_GATEWAY}
+      - KAFKA_BROKERS=kafka:9092
+    depends_on:
+      - redis
+      - kafka
+    volumes:
+      - ./api-gateway/src:/usr/src/app/src
+      - ./api-gateway/node_modules:/usr/src/app/node_modules
+      - ./api-gateway/package.json:/usr/src/app/package.json
+      - ./api-gateway/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./api-gateway/nest-cli.json:/usr/src/app/nest-cli.json
+    command: npm run start:dev
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  message-counter-service:
+    build:
+      context: ./message-counter
+      dockerfile: Dockerfile
+    container_name: kafka-message-counter-api-dev
+    ports:
+      - "8081:8080"  # Cambiado para evitar conflicto de puertos
+    environment:
+      - NODE_ENV=${ENVIRONMENT}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - KAFKA_BROKERS=kafka:9092
+    depends_on:
+      - api-gateway
+    volumes:
+      # Corregido: apunta a los archivos dentro de message-counter
+      - ./message-counter/src:/usr/src/app/src
+      - ./message-counter/node_modules:/usr/src/app/node_modules
+      - ./message-counter/package.json:/usr/src/app/package.json
+      - ./message-counter/tsconfig.json:/usr/src/app/tsconfig.json
+      - ./message-counter/nest-cli.json:/usr/src/app/nest-cli.json
+    command: npm run start:dev
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  daily-total-service:
+    build:
+      context: ./daily-total-service
+      dockerfile: Dockerfile
+    container_name: kafka-message-counter-daily-total-service-dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=${ENVIRONMENT}
+      - EXTERNAL_API_URL=${EXTERNAL_API_URL}
+      - KAFKA_BROKERS=kafka:9092
+      - PROCESSING_DELAY_MS=1000
+    depends_on:
+      - kafka
+    volumes:
+      - ./daily-total-service/src:/usr/src/app/src
+      - ./daily-total-service/node_modules:/usr/src/app/node_modules
+      - ./daily-total-service/package.json:/usr/src/app/package.json
+      - ./daily-total-service/tsconfig.json:/usr/src/app/tsconfig.json
+    command: npm run start:dev
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: kafka-message-counter-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: kafka-message-counter-zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka-message-counter-kafka-dev
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_LOG_LEVEL=DEBUG
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka-data:/kafka
+    networks:
+      - app-network
+    restart: unless-stopped
+  
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   container_name: kafka-message-counter-redis-commander
+  #   environment:
+  #     - REDIS_HOSTS=local:redis:6379
+  #   ports:
+  #     - "8083:8081"
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - app-network
+  #   restart: unless-stopped
+  
+  # kafka-ui:
+  #   image: provectuslabs/kafka-ui:latest
+  #   container_name: kafka-ui
+  #   ports:
+  #     - "8090:8080"
+  #   environment:
+  #     KAFKA_CLUSTERS_0_NAME: local
+  #     KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+  #   depends_on:
+  #     - kafka
+  #   networks:
+  #     - app-network
+
+
+volumes:
+  redis-data:
+    driver: local
+  kafka-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
