@@ -19,7 +19,7 @@ export class RedisCountsRepository implements CountsRepository {
 
     // 1. Verificar si el mensaje existe en el conjunto global
     const existsGlobally = await this.redisClient.sismember(
-      `account:${accountId}:messages:global`,
+      `account:global:messages:global`,
       messageId,
     );
 
@@ -41,7 +41,7 @@ export class RedisCountsRepository implements CountsRepository {
 
     // 3. Agregar el mensaje al conjunto global para idempotencia permanente
     await this.redisClient.sadd(
-      `account:${accountId}:messages:global`,
+      `account:global:messages:global`,
       messageId,
     );
 
