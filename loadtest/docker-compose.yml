@@ -7,9 +7,9 @@ services:
     working_dir: /scripts
     command: run /scripts/load_test.js
     networks:
-      - app-network
+      - counter-messages-ms-nest-kafka_app-network
 
 networks:
-  app-network:
+  counter-messages-ms-nest-kafka_app-network:
     external: true 
 
