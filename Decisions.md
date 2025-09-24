@@ -20,20 +20,20 @@ Los datos se almacenan en Redis siguiendo una convención de nombres jerárquica
    - Ejemplo: `{5: 1, 7: 4, 21: 4}`
    - Redis permite manipular campos individuales sin recuperar todo el hash
    
-   ![Ejemplo Hourly](docs/hourly_example.png)
+   ![Ejemplo Hourly](docs/hourly.png)
 
 2. **Daily**: `account:acc_12345:daily:2025-09-29` (tipo string)
    - Almacena la cantidad total de mensajes enviados por una cuenta en el día
    - Ejemplo: `"17"`
    
-   ![Ejemplo Daily](docs/daily_example.png)
+   ![Ejemplo Daily](docs/daily.png)
 
 3. **Messages**: `account:acc_12345:messages:account:acc_12345d22311:messages:2025-09-30` (tipo SET)
    - Almacena un SET con los messageId para llevar un registro de los mensajes de cada cuenta.
    - Ejemplo: `[msg_1234ASDdF, msg_1234A33SDdF, msg_1234A44455533SDdF]`
    - Garantiza idempotencia al asegurar que cada mensaje se cuente solo una vez
    
-   ![Ejemplo Messages](docs/messages_example.png)
+   ![Ejemplo Messages](docs/messages.png)
 
 ### Endpoints
 Se diseñaron endpoints mínimos y necesarios con validaciones en los campos más relevantes:
