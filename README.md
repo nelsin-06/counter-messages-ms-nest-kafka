@@ -7,11 +7,7 @@ Está implementado con **NestJS**, **Node.js v20.19.2**, **Docker**, **Kafka**, 
 
 ## Instalación
 1. Clonar el repositorio.
-2. Instalar dependencias con `npm install`:
-	```bash
-	npm install
-	```
-3. Copiar el archivo `.env.example` a `.env`, configurando las siguientes variables de entorno:
+2. Copiar el archivo `.env.example` a `.env`, configurando las siguientes variables de entorno:
 
 	```
 	ENVIRONMENT=development
@@ -21,7 +17,7 @@ Está implementado con **NestJS**, **Node.js v20.19.2**, **Docker**, **Kafka**, 
 
 	Este archivo `.env` debe crearse en la raíz del proyecto. Las variables usadas por `docker-compose` pueden ajustarse si hay problemas de conexión (por ejemplo puertos, hosts de Kafka/Redis, etc.).
 
-4. Levantar el proyecto con Docker Compose:
+3. Levantar el proyecto con Docker Compose:
 	```bash
 	docker-compose up --build
 	```
