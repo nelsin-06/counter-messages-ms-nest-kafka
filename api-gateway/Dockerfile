@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
@@ -15,4 +15,4 @@ EXPOSE 8080
 
 # Command is now specified in docker-compose.yml
 # This allows us to easily switch between development and production modes
-CMD ["npm", "run", "start:dev"]
+CMD ["sh", "-lc", "[ -d node_modules ] || npm ci && npm run start:dev"]

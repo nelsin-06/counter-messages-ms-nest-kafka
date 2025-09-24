@@ -16,7 +16,6 @@ services:
       - kafka
     volumes:
       - ./api-gateway/src:/usr/src/app/src
-      - ./api-gateway/node_modules:/usr/src/app/node_modules
       - ./api-gateway/package.json:/usr/src/app/package.json
       - ./api-gateway/tsconfig.json:/usr/src/app/tsconfig.json
       - ./api-gateway/nest-cli.json:/usr/src/app/nest-cli.json
@@ -42,7 +41,6 @@ services:
     volumes:
       # Corregido: apunta a los archivos dentro de message-counter
       - ./message-counter/src:/usr/src/app/src
-      - ./message-counter/node_modules:/usr/src/app/node_modules
       - ./message-counter/package.json:/usr/src/app/package.json
       - ./message-counter/tsconfig.json:/usr/src/app/tsconfig.json
       - ./message-counter/nest-cli.json:/usr/src/app/nest-cli.json
@@ -67,7 +65,6 @@ services:
       - kafka
     volumes:
       - ./daily-total-service/src:/usr/src/app/src
-      - ./daily-total-service/node_modules:/usr/src/app/node_modules
       - ./daily-total-service/package.json:/usr/src/app/package.json
       - ./daily-total-service/tsconfig.json:/usr/src/app/tsconfig.json
     command: npm run start:dev

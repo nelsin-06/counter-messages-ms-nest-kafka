@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
@@ -10,9 +10,9 @@ RUN npm ci
 # Copy application source (not needed for dev as we'll mount the code)
 # COPY . .
 
-# Expose API port
-EXPOSE 8080
+# Expose HTTP port
+EXPOSE 3001
 
 # Command is now specified in docker-compose.yml
 # This allows us to easily switch between development and production modes
-CMD ["npm", "run", "start:dev"]
+CMD ["sh", "-lc", "[ -d node_modules ] || npm ci && npm run start:dev"]
