@@ -44,6 +44,36 @@ Endpoints HTTP (API Gateway):
 - GET `/api/counts`
 - POST `/api/webhook/message`
 
+Detalles de endpoints (API Gateway):
+- GET `http://localhost:8080/api/counts`
+	- Body (JSON):
+		```json
+		{
+			"account_id": "acc_54321",
+			"from": "2025-09-19T00:00:00Z",
+			"to": "2025-09-19T23:59:00Z"
+		}
+		```
+	- Validaciones: `account_id`, `from` y `to` son cadenas no vacías.
+
+- POST `http://localhost:8080/api/webhook/message`
+	- Body (JSON):
+		```json
+		{
+			"message_id": "msg_1234ASDdF",
+			"account_id": "acc_12345",
+			"created_at": "2025-09-29T21:13:17Z",
+			"metadata": {
+				"channel": "whatsapp",
+				"source": "inbound",
+				"tags": ["camp:septiembre", "mx"]
+			}
+		}
+		```
+	- Validaciones: `message_id` y `account_id` son cadenas no vacías; `created_at` debe ser fecha en formato ISO8601. Se aceptan propiedades extra (metadata u otros) que serán reenviadas a Kafka.
+
+Nota de validación global: el servicio utiliza `ValidationPipe` de NestJS para transformar y validar los DTOs de entrada.
+
 Microservicios (Kafka topics/patrones):
 - `new-message`: eventos de nuevos mensajes (producidos por API Gateway, consumidos por Message Counter).
 - `get-counts`: solicitudes de conteos por rango (producidas por API Gateway, respondidas por Message Counter).
@@ -75,6 +105,26 @@ Diagrama de flujo (texto):
 - Algunos servicios en el `docker-compose` están comentados porque sirven para monitoreo u otros propósitos adicionales.
 - Kafka UI (opcional): http://localhost:8090
 - Redis Commander (opcional): http://localhost:8083
+
+## Pruebas de carga
+Una vez que todos los servicios estén arriba con Docker Compose, puedes ejecutar la prueba de carga desde la carpeta `loadtest`:
+
+```bash
+cd loadtest
+docker compose up --build
+# o
+docker-compose up --build
+```
+
+También tienes scripts de ayuda:
+- Limpiar el entorno de load test (elimina contenedores/volúmenes del compose de `loadtest`):
+	```bash
+	bash loadtest/clean_loadtest.sh
+	```
+- Levantar el proceso de load test:
+	```bash
+	bash loadtest/run_loadtest.sh
+	```
 
 ## Autor
 Nelson Gallego  
