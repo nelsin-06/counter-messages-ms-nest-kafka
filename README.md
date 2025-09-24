@@ -1,4 +1,4 @@
-# Proyecto Completo
+# Message Counter
 
 ## Descripción
 El ecosistema actual está conformado por microservicios que intercambian eventos en tiempo real. Dentro de este entorno se requiere un servicio que procese los mensajes entrantes, los agrupe y contabilice en intervalos de tiempo definidos. Este servicio debe exponer la información resultante para que pueda ser consumida tanto por sistemas internos como externos, facilitando el análisis, la integración y la toma de decisiones dentro del ecosistema.
