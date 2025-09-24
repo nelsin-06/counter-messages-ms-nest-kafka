@@ -63,6 +63,7 @@ Para asegurar la consistencia de los datos se implementaron dos estrategias prin
 - **Manejo centralizado de errores**: Implementar un sistema más organizado y estructurado para el manejo de errores
 - **Respuestas de API estandarizadas**: Crear un manejo centralizado para las respuestas, ya que actualmente envía payload completo sin estructura definida
 - **Limpiar**: Limpiar comentarios, logs precindibles, etc.
+- **kubernetes**: orquestador con mas abstraccion para visualizar y escalar facilmente.
 
 ## Si usaste IA, cómo fue que la usaste
 
